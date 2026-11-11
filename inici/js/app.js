@@ -79,10 +79,7 @@ function tipus(p) {
  */
 
 function stat(p, nom) {
-  // * P = Pokemon Object | P.stats = Object array | Nom = Stat
-  // ! I get undefined everytime I try to access the array of objects
-  let stat = p.stats.find((s) => s.base === nom)?.base_stat;
-  console.warn(p.stats.name);
+  return p.stats.find((s) => s.stat.name === nom)?.base_stat;
 }
 
 /**
@@ -96,7 +93,7 @@ function stat(p, nom) {
  * @returns {Object}
  * @example fitxa(pikachu).pes // 6
  */
-// ESCRIU AQUÍ la funció fitxa
+function fitxa(p) {}
 
 /* ---------------------------------------------------------------------
    R3 · La classe Equip
