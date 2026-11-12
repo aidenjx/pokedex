@@ -128,6 +128,9 @@ class Equip {
    * @returns {boolean}
    */
   // ESCRIU AQUÍ el mètode te
+  te(id) {
+    return this.membres.some((membre) => membre.id == id); // True si denro de la linea 121 existe el id introducido
+  }
 
   /**
    * Afegeix una fitxa a l'equip, si es pot.
