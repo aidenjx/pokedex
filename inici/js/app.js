@@ -93,7 +93,20 @@ function stat(p, nom) {
  * @returns {Object}
  * @example fitxa(pikachu).pes // 6
  */
-function fitxa(p) {}
+function fitxa(p) {
+  return {
+    id: p.id,
+    nom: majusculaInicial(p.name),
+    tipus: tipus(p),
+    imatge: p.sprites.front_default,
+    hp: stat(p, "hp"),
+    atac: stat(p, "attack"),
+    defensa: stat(p, "defense"),
+    velocidat: stat(p, "speed"),
+    pes: p.weight * 10,
+    alcada: p.height / 10,
+  };
+}
 
 /* ---------------------------------------------------------------------
    R3 · La classe Equip
