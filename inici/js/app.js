@@ -102,8 +102,8 @@ function fitxa(p) {
     hp: stat(p, "hp"),
     atac: stat(p, "attack"),
     defensa: stat(p, "defense"),
-    velocidat: stat(p, "speed"),
-    pes: p.weight * 10,
+    velocitat: stat(p, "speed"),
+    pes: p.weight / 10,
     alcada: p.height / 10,
   };
 }
