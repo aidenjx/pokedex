@@ -129,7 +129,7 @@ class Equip {
    */
   // ESCRIU AQUÍ el mètode te
   te(id) {
-    return this.membres.some((membre) => membre.id == id); // True si denro de la linea 121 existe el id introducido
+    return this.membres.some((membre) => membre.id == id); // True si dentro de la linea 121 existe el id introducido
   }
 
   /**
@@ -139,13 +139,20 @@ class Equip {
    * @returns {boolean} true si l'ha afegida; false si no.
    */
   // ESCRIU AQUÍ el mètode afegeix
+  afegeix(f) {
+    return this.membres.length < 6 && !this.te(f.id) // Si no está, retornara true en lugar de false, ejecutando el ternary operator
+      ? (this.membres.push(f), true)
+      : false; // Si this.membres.lenght < 6 se cumple, retornara este valor. Lo mismo para el segundo condicional. Esto es para devolver un resultado si no se cumple la condicion
+  }
 
   /**
    * Treu de l'equip el membre amb aquest id.
    * Mètode: filter. Recorda desar el resultat a this.membres.
    * @param {number} id
    */
-  // ESCRIU AQUÍ el mètode treu
+  treu(id) {
+    this.membres = this.membres.filter((membre) => membre.id != id);
+  }
 
   /**
    * El poder de l'equip: la suma de hp, atac, defensa i velocitat de tots els membres.
@@ -153,8 +160,24 @@ class Equip {
    * @returns {number}
    */
   // ESCRIU AQUÍ el mètode poder
+  poder() {
+    return this.membres.reduce(
+      (total, membre) =>
+        total + membre.hp + membre.atac + membre.defensa + membre.velocitat,
+      0,
+    );
+  }
 
   // R7 · Només dual general: el mètode recompteTipus va aquí.
+  recompteTipus() {
+    return this.membres.reduce((recompte, membre) => {
+      membre.tipus.reduce((tipusComptats, tipus) => {
+        tipusComptats[tipus] = (tipusComptats[tipus] || 0) + 1;
+        return tipusComptats;
+      }, recompte);
+      return recompte;
+    }, {});
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -170,6 +193,13 @@ class Equip {
  * @param {string} [clau='p07-equip']
  */
 // ESCRIU AQUÍ la funció desaEquip
+function desaEquip(eq, clau = "p07-equip") {
+  const dades = {
+    nom: eq.nom,
+    ids: eq.membres.map((membre) => membre.id),
+  };
+  localStorage.setItem(clau, JSON.stringify(dades));
+}
 
 /**
  * Reconstrueix l'equip que hi ha desat a localStorage amb aquesta clau.
@@ -184,6 +214,22 @@ class Equip {
  * @returns {Equip}
  */
 // ESCRIU AQUÍ la funció recuperaEquip
+function recuperaEquip(totes, clau = "p07-equip") {
+  const text = localStorage.getItem(clau);
+  if (text === null) {
+    return new Equip("El meu equip");
+  }
+
+  const dades = JSON.parse(text);
+  const resultat = new Equip(dades.nom);
+  for (const id of dades.ids) {
+    const membre = totes.find((fitxa) => fitxa.id === id);
+    if (membre) {
+      resultat.afegeix(membre);
+    }
+  }
+  return resultat;
+}
 
 /* ---------------------------------------------------------------------
    R5 · La pàgina
@@ -209,8 +255,37 @@ class Equip {
    --------------------------------------------------------------------- */
 
 // ESCRIU AQUÍ les funcions inicia, tria i allibera
+function inicia() {
+  fitxes = llegeixPokedex(POKEDEX_JSON).map(fitxa);
+  equip = recuperaEquip(fitxes);
+  mostraPokedex(fitxes);
+  mostraEquip(equip);
+}
 
-/* ---------------------------------------------------------------------
+function tria(id) {
+  const membre = fitxes.find((fitxaActual) => fitxaActual.id === id);
+  if (!membre) {
+    return;
+  }
+
+  if (!equip.afegeix(membre)) {
+    avisa(
+      equip.te(id)
+        ? membre.nom + " ja és a l'equip."
+        : "L'equip ja té sis membres.",
+    );
+  }
+  desaEquip(equip);
+  mostraEquip(equip);
+}
+
+function allibera(id) {
+  equip.treu(id);
+  desaEquip(equip);
+  mostraEquip(equip);
+}
+
+/* -------------------------HECHO----------------------------
    R7 · NOMÉS DUAL GENERAL
 
    Mètode recompteTipus() de la classe Equip (escriu-lo a dins de la classe):
